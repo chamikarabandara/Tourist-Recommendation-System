@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accommodation Recommendations | Sri Lanka</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #24352d;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #173d30;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #52665b;
+            font-size: 17px;
+            margin-bottom: 25px;
+        }
+
+        .panel, .hotel {
+            background: white;
+            padding: 24px;
+            margin: 18px 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000010;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 16px 0 8px;
+        }
+
+        select, button {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        select {
+            background: white;
+            border: 1px solid #cbd5cf;
+            color: #24352d;
+        }
+
+        button {
+            margin-top: 22px;
+            background: #176b50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #10523c;
+        }
+
+        .hotel h3 {
+            color: #176b50;
+            margin-top: 0;
+        }
+
+        .hotel p {
+            line-height: 1.6;
+        }
+
+        .message {
+            background: #fff3cd;
+            color: #705719;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+            margin: 18px 0;
+        }
+
+        .info-message {
+            background: #e8f3ff;
+            color: #164b75;
+            padding: 15px 18px;
+            border-radius: 8px;
+            margin: 18px 0;
+            line-height: 1.5;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #176b50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            color: #66756d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .panel, .hotel {
+                padding: 18px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Accommodation Recommendations</h1>
+
+    <p class="subtitle">
+        Explore accommodation options for your selected destination in Sri Lanka.
+    </p>
+
+    <div class="panel">
+        <form method="POST">
+
+            <label for="destination_name">Select Destination</label>
+
+            <select id="destination_name" name="destination_name" required>
+                <option value="">-- Select a destination --</option>
+
+                {% for destination in destination_names %}
+                    <option
+                        value="{{ destination }}"
+                        {% if selected_destination == destination %}selected{% endif %}
+                    >
+                        {{ destination }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="accommodation_type">Select Accommodation Type</label>
+
+            <select id="accommodation_type" name="accommodation_type">
+                <option value="All"
+                    {% if selected_accommodation_type in ["All", "All accommodation types"] %}selected{% endif %}>
+                    All accommodation types
+                </option>
+
+                <option value="Tourist Hotels"
+                    {% if selected_accommodation_type == "Tourist Hotels" %}selected{% endif %}>
+                    Tourist Hotels
+                </option>
+
+                <option value="Classified Hotels( 1-5 Star)"
+                    {% if selected_accommodation_type == "Classified Hotels( 1-5 Star)" %}selected{% endif %}>
+                    Classified Hotels (1–5 Star)
+                </option>
+
+                <option value="Guest Houses"
+                    {% if selected_accommodation_type == "Guest Houses" %}selected{% endif %}>
+                    Guest Houses
+                </option>
+
+                <option value="Boutique Hotels"
+                    {% if selected_accommodation_type == "Boutique Hotels" %}selected{% endif %}>
+                    Boutique Hotels
+                </option>
+
+                <option value="Boutique Villas"
+                    {% if selected_accommodation_type == "Boutique Villas" %}selected{% endif %}>
+                    Boutique Villas
+                </option>
+
+                <option value="Home Stay Units"
+                    {% if selected_accommodation_type == "Home Stay Units" %}selected{% endif %}>
+                    Home Stay Units
+                </option>
+
+                <option value="Rented Apartments"
+                    {% if selected_accommodation_type == "Rented Apartments" %}selected{% endif %}>
+                    Rented Apartments
+                </option>
+
+                <option value="Bangalows"
+                    {% if selected_accommodation_type == "Bangalows" %}selected{% endif %}>
+                    Bungalows
+                </option>
+
+                <option value="Rented Homes"
+                    {% if selected_accommodation_type == "Rented Homes" %}selected{% endif %}>
+                    Rented Homes
+                </option>
+            </select>
+
+            <button type="submit">Find Accommodation</button>
+        </form>
+    </div>
+
+    {% if error_message %}
+        <div class="message" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    {% if info_message %}
+        <div class="info-message" role="status">
+            {{ info_message }}
+        </div>
+    {% endif %}
+
+    {% if hotel_results %}
+        <h2>Accommodation Options</h2>
+
+        <p>Showing {{ hotel_results|length }} accommodation options.</p>
+
+        {% for hotel in hotel_results %}
+            <div class="hotel">
+                <h3>{{ hotel["Name"] }}</h3>
+
+                <p>
+                    <strong>Accommodation Type:</strong>
+                    {{ hotel["Type"] }}
+                </p>
+
+                <p>
+                    <strong>District:</strong>
+                    {{ hotel["District"] }}
+                </p>
+
+                <p>
+                    <strong>Grade:</strong>
+                    {{ hotel["Grade"] }}
+                </p>
+
+                <p>
+                    <strong>Number of Rooms:</strong>
+                    {{ hotel["Rooms"] }}
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    {{ hotel["Address"] }}
+                </p>
+            </div>
+        {% endfor %}
+
+        <p class="note">
+            Recommendations use district and text matching from the available
+            dataset. They are not guaranteed to be the nearest accommodation
+            options, and the displayed addresses have not been independently
+            verified.
+        </p>
+    {% endif %}
+
+    <a href="/" class="back-link">
+        &#8592; Back to Destination Recommendations
+    </a>
+
+</div>
+</body>
+</html>

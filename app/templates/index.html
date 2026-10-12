@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sri Lanka Tourist Recommendation System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            margin: 0;
+            padding: 30px;
+            color: #24352d;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #173d30;
+        }
+
+        .subtitle {
+            font-size: 17px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .panel, .destination {
+            background: white;
+            padding: 22px;
+            margin: 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000010;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        select, button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        select {
+            border: 1px solid #cccccc;
+            background: white;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #176b50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #10523c;
+        }
+
+        .hotel-button {
+            display: inline-block;
+            background: #d99b35;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 8px 0 12px;
+            text-align: center;
+        }
+
+        .hotel-button:hover {
+            background: #b98022;
+        }
+
+        .destination h3 {
+            color: #176b50;
+        }
+
+        .score {
+            color: #176b50;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #66756d;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Sri Lanka Tourist Recommendation System</h1>
+
+    <p class="subtitle">
+        Discover destinations for your next Sri Lankan journey.
+    </p>
+
+    <a href="/hotels" class="hotel-button">
+        Browse All Accommodation
+    </a>
+
+    <div class="panel">
+        <form method="POST">
+
+            <label for="preferred_type">Choose your interest</label>
+
+            <select name="preferred_type" id="preferred_type">
+                <option value="All"
+                    {% if selected_type == "All" %}selected{% endif %}>
+                    All destination types
+                </option>
+
+                <option value="Beaches"
+                    {% if selected_type == "Beaches" %}selected{% endif %}>
+                    Beaches
+                </option>
+
+                <option value="Religious Sites"
+                    {% if selected_type == "Religious Sites" %}selected{% endif %}>
+                    Religious Sites
+                </option>
+
+                <option value="Nature & Wildlife Areas"
+                    {% if selected_type == "Nature & Wildlife Areas" %}selected{% endif %}>
+                    Nature & Wildlife Areas
+                </option>
+
+                <option value="Historic Sites"
+                    {% if selected_type == "Historic Sites" %}selected{% endif %}>
+                    Historic Sites
+                </option>
+
+                <option value="Museums"
+                    {% if selected_type == "Museums" %}selected{% endif %}>
+                    Museums
+                </option>
+
+                <option value="Waterfalls"
+                    {% if selected_type == "Waterfalls" %}selected{% endif %}>
+                    Waterfalls
+                </option>
+
+                <option value="Gardens"
+                    {% if selected_type == "Gardens" %}selected{% endif %}>
+                    Gardens
+                </option>
+
+                <option value="National Parks"
+                    {% if selected_type == "National Parks" %}selected{% endif %}>
+                    National Parks
+                </option>
+
+                <option value="Bodies of Water"
+                    {% if selected_type == "Bodies of Water" %}selected{% endif %}>
+                    Bodies of Water
+                </option>
+
+                <option value="Farms"
+                    {% if selected_type == "Farms" %}selected{% endif %}>
+                    Farms
+                </option>
+
+                <option value="Zoological Gardens"
+                    {% if selected_type == "Zoological Gardens" %}selected{% endif %}>
+                    Zoological Gardens
+                </option>
+            </select>
+
+            <label for="min_rating">Minimum average rating</label>
+
+            <select name="min_rating" id="min_rating">
+                <option value="3.0"
+                    {% if min_rating == 3.0 %}selected{% endif %}>
+                    3.0 and above
+                </option>
+
+                <option value="4.0"
+                    {% if min_rating == 4.0 %}selected{% endif %}>
+                    4.0 and above
+                </option>
+
+                <option value="4.5"
+                    {% if min_rating == 4.5 %}selected{% endif %}>
+                    4.5 and above
+                </option>
+            </select>
+
+            <button type="submit">Find Destinations</button>
+
+        </form>
+    </div>
+
+    {% if recommendations %}
+
+        <h2>Recommended Destinations</h2>
+
+        {% for place in recommendations %}
+
+        <div class="destination">
+
+            <h3>{{ place["Location_Name"] }}</h3>
+
+            <p>
+                <strong>City:</strong>
+                {{ place["Located_City"] }}
+            </p>
+
+            <p>
+                <strong>Type:</strong>
+                {{ place["Location_Type"] }}
+            </p>
+
+            <p>
+                <strong>Average rating:</strong>
+                {{ "%.2f"|format(place["Average_Rating"]) }}/5
+            </p>
+
+            <p>
+                <strong>Tourist reviews:</strong>
+                {{ place["Review_Count"] }}
+            </p>
+
+            <p class="score">
+                Recommendation score:
+                {{ "%.4f"|format(place["Recommendation_Score"]) }}
+            </p>
+
+            <a
+                href="{{ url_for('hotels_page', destination_name=place['Location_Name']) }}"
+                class="hotel-button"
+            >
+                Find Accommodation
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    {% elif request.method == "POST" %}
+
+        <p class="empty-message">
+            No destinations matched your selection.
+            Try another rating or interest.
+        </p>
+
+    {% endif %}
+
+    <footer>
+        Sri Lanka Tourist Recommendation System
+    </footer>
+
+</div>
+</body>
+</html>
