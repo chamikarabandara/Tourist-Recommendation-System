@@ -4,284 +4,612 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accommodation Recommendations | Sri Lanka</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    <title>Accommodation | ExploreLanka</title>
+    <meta name="description" content="Discover accommodation options across Sri Lanka.">
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7f5;
-            color: #24352d;
-            margin: 0;
-            padding: 30px;
-        }
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .container {
-            max-width: 950px;
-            margin: auto;
-        }
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        h1 {
-            color: #173d30;
-            margin-bottom: 10px;
-        }
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-        .subtitle {
-            color: #52665b;
-            font-size: 17px;
-            margin-bottom: 25px;
-        }
-
-        .panel, .hotel {
-            background: white;
-            padding: 24px;
-            margin: 18px 0;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #00000010;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin: 16px 0 8px;
-        }
-
-        select, button {
-            display: block;
-            width: 100%;
-            padding: 13px;
-            border-radius: 7px;
-            font-size: 15px;
-        }
-
-        select {
-            background: white;
-            border: 1px solid #cbd5cf;
-            color: #24352d;
-        }
-
-        button {
-            margin-top: 22px;
-            background: #176b50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #10523c;
-        }
-
-        .hotel h3 {
-            color: #176b50;
-            margin-top: 0;
-        }
-
-        .hotel p {
-            line-height: 1.6;
-        }
-
-        .message {
-            background: #fff3cd;
-            color: #705719;
-            padding: 15px;
-            border-radius: 8px;
-            line-height: 1.5;
-            margin: 18px 0;
-        }
-
-        .info-message {
-            background: #e8f3ff;
-            color: #164b75;
-            padding: 15px 18px;
-            border-radius: 8px;
-            margin: 18px 0;
-            line-height: 1.5;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #176b50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .note {
-            color: #66756d;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 16px;
-            }
-
-            .panel, .hotel {
-                padding: 18px;
-            }
-
-            h1 {
-                font-size: 26px;
-            }
-        }
-    </style>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 
 <body>
-<div class="container">
 
-    <h1>Accommodation Recommendations</h1>
+<!-- NAVIGATION -->
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
 
-    <p class="subtitle">
-        Explore accommodation options for your selected destination in Sri Lanka.
-    </p>
+        <a class="navbar-brand" href="/">
+            Explore<span>Lanka</span>
+        </a>
 
-    <div class="panel">
-        <form method="POST">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <label for="destination_name">Select Destination</label>
+        <div class="collapse navbar-collapse" id="mainNavbar">
 
-            <select id="destination_name" name="destination_name" required>
-                <option value="">-- Select a destination --</option>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
 
-                {% for destination in destination_names %}
-                    <option
-                        value="{{ destination }}"
-                        {% if selected_destination == destination %}selected{% endif %}
-                    >
-                        {{ destination }}
-                    </option>
-                {% endfor %}
-            </select>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
 
-            <label for="accommodation_type">Select Accommodation Type</label>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#discover">Destinations</a>
+                </li>
 
-            <select id="accommodation_type" name="accommodation_type">
-                <option value="All"
-                    {% if selected_accommodation_type in ["All", "All accommodation types"] %}selected{% endif %}>
-                    All accommodation types
-                </option>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hotels">Accommodation</a>
+                </li>
 
-                <option value="Tourist Hotels"
-                    {% if selected_accommodation_type == "Tourist Hotels" %}selected{% endif %}>
-                    Tourist Hotels
-                </option>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#about">About</a>
+                </li>
 
-                <option value="Classified Hotels( 1-5 Star)"
-                    {% if selected_accommodation_type == "Classified Hotels( 1-5 Star)" %}selected{% endif %}>
-                    Classified Hotels (1–5 Star)
-                </option>
+                <li class="nav-item">
+                    <a href="/" class="btn btn-brand ms-lg-2">
+                        Explore Destinations
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </li>
 
-                <option value="Guest Houses"
-                    {% if selected_accommodation_type == "Guest Houses" %}selected{% endif %}>
-                    Guest Houses
-                </option>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-                <option value="Boutique Hotels"
-                    {% if selected_accommodation_type == "Boutique Hotels" %}selected{% endif %}>
-                    Boutique Hotels
-                </option>
 
-                <option value="Boutique Villas"
-                    {% if selected_accommodation_type == "Boutique Villas" %}selected{% endif %}>
-                    Boutique Villas
-                </option>
+<main>
 
-                <option value="Home Stay Units"
-                    {% if selected_accommodation_type == "Home Stay Units" %}selected{% endif %}>
-                    Home Stay Units
-                </option>
+    <!-- ACCOMMODATION HERO -->
+    <section class="hotel-hero">
 
-                <option value="Rented Apartments"
-                    {% if selected_accommodation_type == "Rented Apartments" %}selected{% endif %}>
-                    Rented Apartments
-                </option>
+        <div class="container">
 
-                <option value="Bangalows"
-                    {% if selected_accommodation_type == "Bangalows" %}selected{% endif %}>
-                    Bungalows
-                </option>
+            <div class="hotel-hero-content">
 
-                <option value="Rented Homes"
-                    {% if selected_accommodation_type == "Rented Homes" %}selected{% endif %}>
-                    Rented Homes
-                </option>
-            </select>
+                <span class="hero-tag">
+                    STAY · RELAX · EXPERIENCE
+                </span>
 
-            <button type="submit">Find Accommodation</button>
-        </form>
+                <h1>
+                    Find Your Perfect<br>
+                    <span>Stay in Sri Lanka.</span>
+                </h1>
+
+                <p>
+                    Discover accommodation options for your favourite
+                    destinations and make your Sri Lankan journey
+                    even more memorable.
+                </p>
+
+                <a href="#hotel-search" class="btn btn-gold btn-lg">
+                    Find Accommodation
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- INTRODUCTION -->
+    <section class="hotel-intro">
+
+        <div class="container text-center">
+
+            <div class="section-label">
+                YOUR STAY, YOUR EXPERIENCE
+            </div>
+
+            <h2 class="section-title">
+                Discover places to <span>stay.</span>
+            </h2>
+
+            <p class="section-description">
+                From welcoming guest houses to boutique villas,
+                explore accommodation options associated with
+                your selected destination.
+            </p>
+
+        </div>
+    </section>
+
+
+    <!-- ACCOMMODATION SEARCH -->
+    <section class="hotel-search-section section-padding" id="hotel-search">
+
+        <div class="container">
+
+            <div class="mb-4">
+
+                <div class="section-label">
+                    ACCOMMODATION DISCOVERY
+                </div>
+
+                <h2 class="section-title">
+                    Find Your <span>Accommodation</span>
+                </h2>
+
+                <p class="text-secondary">
+                    Select your destination and preferred accommodation type.
+                </p>
+
+            </div>
+
+
+            <!-- SEARCH PANEL -->
+            <div class="hotel-search-panel mb-5">
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+
+                    <div class="search-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <div>
+                        <h3 class="mb-1">Plan your stay</h3>
+
+                        <p class="text-secondary mb-0">
+                            Choose your travel destination and accommodation preference.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- UPDATED FORM ACTION -->
+                <form method="POST"
+                      action="{{ url_for('hotels_page') }}#hotel-results"
+                      id="hotelSearchForm">
+
+                    <div class="row g-4 align-items-end">
+
+                        <!-- Destination -->
+                        <div class="col-lg-5 col-md-6">
+
+                            <label for="destination_name" class="form-label">
+                                <i class="bi bi-geo-alt me-1"></i>
+                                Select Your Destination
+                            </label>
+
+                            <select id="destination_name"
+                                    name="destination_name"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    -- Select a destination --
+                                </option>
+
+                                {% for destination in destination_names %}
+
+                                    <option
+                                        value="{{ destination }}"
+                                        {% if selected_destination == destination %}selected{% endif %}>
+
+                                        {{ destination }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+
+                        <!-- Accommodation Type -->
+                        <div class="col-lg-4 col-md-6">
+
+                            <label for="accommodation_type" class="form-label">
+                                <i class="bi bi-house-door me-1"></i>
+                                Accommodation Type
+                            </label>
+
+                            <select id="accommodation_type"
+                                    name="accommodation_type"
+                                    class="form-select">
+
+                                <option value="All"
+                                    {% if selected_accommodation_type in ["All", "All accommodation types"] %}selected{% endif %}>
+                                    All accommodation types
+                                </option>
+
+                                <option value="Tourist Hotels"
+                                    {% if selected_accommodation_type == "Tourist Hotels" %}selected{% endif %}>
+                                    Tourist Hotels
+                                </option>
+
+                                <option value="Classified Hotels( 1-5 Star)"
+                                    {% if selected_accommodation_type == "Classified Hotels( 1-5 Star)" %}selected{% endif %}>
+                                    Classified Hotels (1–5 Star)
+                                </option>
+
+                                <option value="Guest Houses"
+                                    {% if selected_accommodation_type == "Guest Houses" %}selected{% endif %}>
+                                    Guest Houses
+                                </option>
+
+                                <option value="Boutique Hotels"
+                                    {% if selected_accommodation_type == "Boutique Hotels" %}selected{% endif %}>
+                                    Boutique Hotels
+                                </option>
+
+                                <option value="Boutique Villas"
+                                    {% if selected_accommodation_type == "Boutique Villas" %}selected{% endif %}>
+                                    Boutique Villas
+                                </option>
+
+                                <option value="Home Stay Units"
+                                    {% if selected_accommodation_type == "Home Stay Units" %}selected{% endif %}>
+                                    Home Stay Units
+                                </option>
+
+                                <option value="Rented Apartments"
+                                    {% if selected_accommodation_type == "Rented Apartments" %}selected{% endif %}>
+                                    Rented Apartments
+                                </option>
+
+                                <option value="Bangalows"
+                                    {% if selected_accommodation_type == "Bangalows" %}selected{% endif %}>
+                                    Bungalows
+                                </option>
+
+                                <option value="Rented Homes"
+                                    {% if selected_accommodation_type == "Rented Homes" %}selected{% endif %}>
+                                    Rented Homes
+                                </option>
+
+                            </select>
+                        </div>
+
+
+                        <!-- Submit Button -->
+                        <div class="col-lg-3">
+
+                            <button type="submit"
+                                    class="btn btn-search w-100"
+                                    id="hotelSearchButton">
+
+                                <span>Find Accommodation</span>
+
+                                <i class="bi bi-arrow-right ms-2"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+
+
+            <!-- RESULTS AND MESSAGES SCROLL TARGET -->
+            <div id="hotel-results">
+
+                <!-- ERROR MESSAGE -->
+                {% if error_message %}
+
+                    <div class="alert alert-danger d-flex align-items-start gap-3 mb-4"
+                         role="alert">
+
+                        <i class="bi bi-exclamation-circle-fill fs-5"></i>
+
+                        <div>
+                            <strong>Accommodation Notice</strong>
+                            <p class="mb-0 mt-1">{{ error_message }}</p>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- INFORMATION MESSAGE -->
+                {% if info_message %}
+
+                    <div class="alert alert-info d-flex align-items-start gap-3 mb-4"
+                         role="status">
+
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+
+                        <div>
+                            <strong>Additional Information</strong>
+                            <p class="mb-0 mt-1">{{ info_message }}</p>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- ACCOMMODATION RESULTS -->
+                {% if hotel_results %}
+
+                    <div class="hotel-results-heading mb-4">
+
+                        <div class="section-label">
+                            YOUR ACCOMMODATION OPTIONS
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+                            <div>
+                                <h2 class="section-title mb-2">
+                                    Available <span>Stays</span>
+                                </h2>
+
+                                <p class="text-secondary mb-0">
+                                    Accommodation options associated with
+                                    <strong>{{ selected_destination }}</strong>.
+                                </p>
+                            </div>
+
+                            <span class="result-count">
+                                <i class="bi bi-building me-1"></i>
+                                {{ hotel_results|length }} Options
+                            </span>
+
+                        </div>
+                    </div>
+
+
+                    <!-- ACCOMMODATION CARDS -->
+                    <div class="row g-4">
+
+                        {% for hotel in hotel_results %}
+
+                            <div class="col-lg-6 col-md-12">
+
+                                <article class="hotel-card h-100">
+
+                                    <div class="hotel-card-top">
+
+                                        <div class="hotel-icon">
+                                            <i class="bi bi-house-heart"></i>
+                                        </div>
+
+                                        <span class="hotel-type-badge">
+                                            {{ hotel["Type"] }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="hotel-card-body">
+
+                                        <h3>{{ hotel["Name"] }}</h3>
+
+                                        <div class="hotel-location mb-3">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            {{ hotel["District"] }}
+                                        </div>
+
+
+                                        <div class="hotel-details-grid">
+
+                                            <!-- Accommodation Type -->
+                                            <div class="hotel-detail">
+
+                                                <small>Accommodation Type</small>
+
+                                                <strong>
+                                                    {{ hotel["Type"] if hotel["Type"] else "Not specified" }}
+                                                </strong>
+
+                                            </div>
+
+
+                                            <!-- Grade -->
+                                            <div class="hotel-detail">
+
+                                                <small>Grade</small>
+
+                                                <strong>
+                                                    {{ hotel["Grade"] if hotel["Grade"] else "Not specified" }}
+                                                </strong>
+
+                                            </div>
+
+
+                                            <!-- Rooms -->
+                                            <div class="hotel-detail">
+
+                                                <small>Number of Rooms</small>
+
+                                                <strong>
+                                                    {{ hotel["Rooms"] if hotel["Rooms"] else "Not specified" }}
+                                                </strong>
+
+                                            </div>
+
+
+                                            <!-- Address -->
+                                            <div class="hotel-detail hotel-address">
+
+                                                <small>
+                                                    <i class="bi bi-pin-map me-1"></i>
+                                                    Address
+                                                </small>
+
+                                                <strong>
+                                                    {{ hotel["Address"] if hotel["Address"] else "Address not available" }}
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- DISCLAIMER -->
+                    <div class="hotel-disclaimer mt-4">
+
+                        <div class="d-flex align-items-start gap-2">
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+                            <p class="mb-0">
+                                Recommendations use district and text matching
+                                from the available dataset. They are not guaranteed
+                                to be the nearest accommodation options, and the
+                                displayed addresses have not been independently verified.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                {% elif not error_message and request.method == "GET" %}
+
+                    <!-- INITIAL EMPTY STATE -->
+                    <div class="hotel-empty-state text-center">
+
+                        <div class="empty-icon">
+                            <i class="bi bi-house-heart"></i>
+                        </div>
+
+                        <h3>Your next stay starts here.</h3>
+
+                        <p>
+                            Select a destination and accommodation type
+                            to explore available options.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+            <!-- END RESULTS SCROLL TARGET -->
+
+        </div>
+
+    </section>
+
+
+    <!-- BACK TO DESTINATIONS -->
+    <section class="hotel-back-banner">
+
+        <div class="container">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-8">
+
+                    <div class="section-label">
+                        CONTINUE EXPLORING
+                    </div>
+
+                    <h2>
+                        Still looking for your
+                        <span>next destination?</span>
+                    </h2>
+
+                    <p>
+                        Discover more beautiful places across Sri Lanka.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 text-lg-end">
+
+                    <a href="{{ url_for('home') }}"
+                       class="btn btn-gold">
+
+                        Explore Destinations
+                        <i class="bi bi-arrow-right ms-2"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="row g-4 align-items-center">
+
+            <div class="col-lg-6">
+
+                <a href="/" class="navbar-brand footer-brand">
+                    Explore<span>Lanka</span>
+                </a>
+
+                <p class="mt-3">
+                    Discover the beauty of Sri Lanka,
+                    one destination at a time.
+                </p>
+
+            </div>
+
+            <div class="col-lg-6 text-lg-end">
+
+                <a href="/" class="footer-link">Home</a>
+
+                <a href="/#discover" class="footer-link">Destinations</a>
+
+                <a href="/hotels" class="footer-link">Accommodation</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom mt-4 pt-4">
+
+            <span>
+                © 2026 Sri Lanka Tourist Recommendation System
+            </span>
+
+            <span class="footer-small">
+                Explore · Discover · Experience
+            </span>
+
+        </div>
+
     </div>
 
-    {% if error_message %}
-        <div class="message" role="alert">
-            {{ error_message }}
-        </div>
-    {% endif %}
+</footer>
 
-    {% if info_message %}
-        <div class="info-message" role="status">
-            {{ info_message }}
-        </div>
-    {% endif %}
 
-    {% if hotel_results %}
-        <h2>Accommodation Options</h2>
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <p>Showing {{ hotel_results|length }} accommodation options.</p>
-
-        {% for hotel in hotel_results %}
-            <div class="hotel">
-                <h3>{{ hotel["Name"] }}</h3>
-
-                <p>
-                    <strong>Accommodation Type:</strong>
-                    {{ hotel["Type"] }}
-                </p>
-
-                <p>
-                    <strong>District:</strong>
-                    {{ hotel["District"] }}
-                </p>
-
-                <p>
-                    <strong>Grade:</strong>
-                    {{ hotel["Grade"] }}
-                </p>
-
-                <p>
-                    <strong>Number of Rooms:</strong>
-                    {{ hotel["Rooms"] }}
-                </p>
-
-                <p>
-                    <strong>Address:</strong>
-                    {{ hotel["Address"] }}
-                </p>
-            </div>
-        {% endfor %}
-
-        <p class="note">
-            Recommendations use district and text matching from the available
-            dataset. They are not guaranteed to be the nearest accommodation
-            options, and the displayed addresses have not been independently
-            verified.
-        </p>
-    {% endif %}
-
-    <a href="/" class="back-link">
-        &#8592; Back to Destination Recommendations
-    </a>
-
-</div>
 </body>
 </html>
